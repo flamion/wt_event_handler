@@ -1,7 +1,10 @@
 use std::io;
 use std::process::exit;
+use std::time::Duration;
 
 use log::info;
+use sqlx::sqlite::SqlitePoolOptions;
+use crate::db::database::Database;
 
 use crate::fetch_loop::fetch_loop;
 use crate::menu_options::{add_webhook, clean_recent, init_log, remove_webhook, test_hook, verify_json};
@@ -11,12 +14,25 @@ mod scrapers;
 mod json;
 mod menu_options;
 mod fetch_loop;
+mod db;
 
 const RECENT_PATH: &str = "assets/recent.json";
 const TOKEN_PATH: &str = "assets/discord_token.json";
+const DB_PATH: &str = "assets/db.db";
 
 #[tokio::main]
 async fn main() {
+	let pool = SqlitePoolOptions::new()
+		.max_lifetime(Duration::from_secs(6000))
+		.min_connections(1)
+		.max_connections(10)
+		.connect(DB_PATH)
+		.await.unwrap();
+
+	let database = Database {
+		db: pool
+	};
+
 	let mut line = String::new();
 	let mut hooks = true;
 	let mut json_verification = true;
