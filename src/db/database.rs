@@ -2,5 +2,6 @@ use sqlx::SqlitePool;
 
 #[derive(Clone)]
 pub struct Database {
-	pub db: SqlitePool,
+	pub auth: SqlitePool,
+	pub recent: SqlitePool,
 }

@@ -19,19 +19,27 @@ mod embed;
 
 const RECENT_PATH: &str = "assets/recent.json";
 const TOKEN_PATH: &str = "assets/discord_token.json";
-const DB_PATH: &str = "assets/db.db";
+const DB_AUTH: &str = "assets/auth.db";
 
 #[tokio::main]
 async fn main() {
-	let pool = SqlitePoolOptions::new()
+	let auth_pool = SqlitePoolOptions::new()
 		.max_lifetime(Duration::from_secs(6000))
 		.min_connections(1)
 		.max_connections(10)
-		.connect(DB_PATH)
+		.connect(DB_AUTH)
+		.await.unwrap();
+
+	let recent_pool = SqlitePoolOptions::new()
+		.max_lifetime(Duration::from_secs(6000))
+		.min_connections(1)
+		.max_connections(10)
+		.connect(DB_AUTH)
 		.await.unwrap();
 
 	let database = Database {
-		db: pool
+		auth: pool,
+		recent: recent_pool,
 	};
 
 	let mut line = String::new();
