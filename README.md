@@ -1,3 +1,7 @@
+# Disclaimer: This branch is scrapped, but preserved for future reference
+I chose not to use a data-base as it would mean managing persistent data / state, in a case where rebuilding all data is smarter.
+Performance is no longer an issue as an in-memory solution has been used since.
+
 # WT_event_handler
 
 Collects and updates news and distributes them on discord via webhooks
